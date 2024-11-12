@@ -44,6 +44,22 @@ local function SafeCallEvent(event,...)
 	event:Fire(...)
 end
 
+local function deepCloneTable(tbl)
+    local newTable = {}
+    for key, value in pairs(tbl) do
+        if type(value) == "table" then
+            -- Recursively clone nested tables
+            newTable[key] = deepCloneTable(value)
+        elseif typeof(value) == "Instance" then
+            -- Handle cloning of Roblox Instances if needed
+            newTable[key] = value:Clone()
+        else
+            newTable[key] = value
+        end
+    end
+    return newTable
+end
+
 local function CallEvents(Animation,Call:BindableEvent,Time:number,MarkersUsed)
 	if Call == nil or typeof(Call)~="Instance"or not Call:IsA("BindableEvent") then return end
 	if Time == nil or type(Time)~="number" then return end
@@ -200,11 +216,11 @@ end
 
 local module = {}
 module.__index = module
-
-
-
+ 
+ 
 function module.CreateModuleGroup()
-	return GroupTamplate:Clone()
+    local clonedGroup = deepCloneTable(GroupTamplate)
+    return clonedGroup
 end
 
 
