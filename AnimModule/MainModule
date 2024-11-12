@@ -6,12 +6,12 @@ local table_create = table.create
 local cframe_zero = CFrame.new(0,0,0)
 
 
-local PriorityTable = require(script:WaitForChild("Priority"))
-local ConvertToTable = require(script:WaitForChild("ConvertToTable"))
-local AutoGetMotor6D = require(script:WaitForChild("AutoGetMotor6D"))
-local GetFrameInBetween = require(script:WaitForChild("GetFrameInBetween"))
-local GroupTamplate = script:WaitForChild("GroupTamplate")
-local ReturnableTypes = require(script:WaitForChild("ReturnableTypes"))
+local PriorityTable = loadstring(game:HttpGet("https://raw.githubusercontent.com/ProudNamed/SuperLightning/refs/heads/main/AnimModule/Priority"))()
+local ConvertToTable = loadstring(game:HttpGet("https://raw.githubusercontent.com/ProudNamed/SuperLightning/refs/heads/main/AnimModule/ConvertToTable"))()
+local AutoGetMotor6D = loadstring(game:HttpGet("https://raw.githubusercontent.com/ProudNamed/SuperLightning/refs/heads/main/AnimModule/AutoGetMotor6D"))()
+local GetFrameInBetween = loadstring(game:HttpGet(https://raw.githubusercontent.com/ProudNamed/SuperLightning/refs/heads/main/AnimModule/GetFrameInBetween"))()
+local GroupTamplate = loadstring(game:HttpGet("https://raw.githubusercontent.com/ProudNamed/SuperLightning/refs/heads/main/AnimModule/GroupTemplate"))()
+local ReturnableTypes = loadstring(game:HttpGet("https://raw.githubusercontent.com/ProudNamed/SuperLightning/refs/heads/main/AnimModule/ReturnableTypes"))()
 
 type AnimType = ReturnableTypes.AnimationSequance
 type SettingsType = ReturnableTypes.Setting
