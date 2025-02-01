@@ -1,0 +1,83 @@
+local WingM = {}
+
+
+function WingM.createWing(config, customModel, partToAttachTo)
+	task.spawn(function()
+		local defaultConfig = {
+			wingSize = Vector3.new(4, 0.2, 0.1),  -- Not used if custom model is used
+			wingColor = Color3.new(1, 0, 0),
+			scaleOffset = 1,
+			positionOffset = Vector3.new(0, 0, -1),
+			positionScale = Vector3.new(0, 0, 0),
+			positionSpeed = Vector3.new(0, 3, 0),
+			rotationScale = Vector3.new(10, 10, 10),
+			rotationSpeed = Vector3.new(3, 3, 2),
+			rotationOffset = Vector3.new(0, 0, 0)
+		}
+
+		config = setmetatable(config or {}, { __index = defaultConfig })
+
+
+		local wing
+		if customModel then
+			wing = customModel:Clone()
+			wing.Name = "Wing"
+
+		else
+			wing = Instance.new("Part")
+			wing.Size = config.wingSize * config.scaleOffset
+			wing.Color = config.wingColor
+			wing.Anchored = false
+			wing.CanCollide = false
+		end
+
+		wing.Parent = partToAttachTo
+
+		local part = partToAttachTo
+		local attachment = Instance.new("Attachment")
+		attachment.Parent = part
+
+		local primaryPart = wing:FindFirstChild("PrimaryPart") or wing
+		local wingAttachment = Instance.new("Attachment")
+		wingAttachment.Parent = primaryPart
+
+		local motor = Instance.new("Motor6D")
+		motor.Name = "WingMotor"
+		motor.Part0 = part
+		motor.Part1 = primaryPart
+		motor.C0 = CFrame.new(0, 0, 0)
+		motor.C1 = CFrame.new(0, 0, 0)
+		motor.Parent = primaryPart
+
+		local motorProp = (motor.Part0 == motor.Parent) and "C0" or "C1"
+		local motorCFrame = motor[motorProp]
+
+		local currentTime = 0
+		local connection = game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+			currentTime = currentTime + deltaTime
+
+			local rotation = CFrame.Angles(
+				math.rad(math.sin(currentTime * config.rotationSpeed.X) * config.rotationScale.X + config.rotationOffset.X),
+				math.rad(math.sin(currentTime * config.rotationSpeed.Y) * config.rotationScale.Y  + config.rotationOffset.Y ),
+				math.rad(math.sin(currentTime * config.rotationSpeed.Z) * config.rotationScale.Z  + config.rotationOffset.Z )
+			)
+
+			local position = CFrame.new(
+				math.sin(currentTime * config.positionSpeed.X) * config.positionScale.X + config.positionOffset.X,
+				math.sin(currentTime * config.positionSpeed.Y) * config.positionScale.Y + config.positionOffset.Y,
+				math.sin(currentTime * config.positionSpeed.Z) * config.positionScale.Z + config.positionOffset.Z
+			)
+
+			motor[motorProp] = rotation * position * motorCFrame
+		end)
+
+		return {
+			wing = wing,
+			motor = motor,
+			motionConnection = connection
+		}
+	end)
+end
+
+
+return WingM
